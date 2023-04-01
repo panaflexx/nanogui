@@ -1,0 +1,7 @@
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/nanovg.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/edit_cache.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/rebuild_cache.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/list_install_components.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/install.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/install/local.dir
+/home/rdavenpo/src/nanogui/ext/nanovg/CMakeFiles/install/strip.dir
