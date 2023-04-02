@@ -6,10 +6,6 @@ NanoGUI
     :target: http://nanogui.readthedocs.org/en/latest/?badge=latest
     :alt: Docs
 
-.. |gha| image:: https://github.com/mitsuba-renderer/nanogui/actions/workflows/build.yml/badge.svg
-   :target: https://github.com/mitsuba-renderer/nanogui/actions/workflows/build.yml
-   :alt: GitHub Actions Build Status
-
 .. begin_brief_description
 
 NanoGUI is a minimalistic cross-platform widget library for OpenGL 3+, GLES
