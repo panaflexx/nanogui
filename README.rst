@@ -74,7 +74,7 @@ down menus, and improved NanoVG texture management.
 Example screenshot
 ----------------------------------------------------------------------------------------
 
-.. image:: https://github.com/panaflexx/nanogui-server/raw/master/resources/screenshot.png
+.. image:: https://github.com/panaflexx/nanogui-server/blob/main/resources/screenshot.png
    :alt: Screenshot of Example 1.
    :align: center
 
