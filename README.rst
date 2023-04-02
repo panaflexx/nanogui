@@ -6,10 +6,6 @@ NanoGUI
     :target: http://nanogui.readthedocs.org/en/latest/?badge=latest
     :alt: Docs
 
-.. |gha| image:: https://github.com/mitsuba-renderer/nanogui/actions/workflows/build.yml/badge.svg
-   :target: https://github.com/mitsuba-renderer/nanogui/actions/workflows/build.yml
-   :alt: GitHub Actions Build Status
-
 .. begin_brief_description
 
 NanoGUI is a minimalistic cross-platform widget library for OpenGL 3+, GLES
@@ -25,7 +21,7 @@ Enoki and ships with its own (absolutely minimal) vector library. Additionally,
 the the repository here incorporates the following changes:
 
 **Note**: This repository contains untested improvements, such as a menubar, drop-
-down menus, and improved NanoVG texture management.
+down menus, TextArea, and improved NanoVG texture management.
 
 1. A different set of naming conventions is used for function and variable
    names that feels more natural in a mixed C++ & Python environment.
