@@ -81,8 +81,10 @@ public:
 
     /// Appends text to the last block
     void add_text(const std::string &text);
-    /// Append text at the end of the widget - adds a new block
+    /// Append text at the end of the widget - adds a new block.  Has word-wrap
     void append(const std::string &text);
+    /// Old method Append text at the end of the widget - adds a new block
+    void appendOrig(const std::string &text);
 
     /// Append a line of text at the bottom
     void append_line(const std::string &text) {
@@ -95,6 +97,7 @@ public:
     /* Widget implementation */
     virtual void draw(NVGcontext *ctx) override;
     virtual Vector2i preferred_size(NVGcontext *ctx) const override;
+    virtual void perform_layout(NVGcontext *ctx) override;
     virtual bool mouse_button_event(const Vector2i &p, int button, bool down,
                                     int modifiers) override;
     virtual bool mouse_drag_event(const Vector2i &p, const Vector2i &rel, int button,
@@ -115,6 +118,8 @@ protected:
     };
 
     std::vector<Block> m_blocks;
+    std::string m_rawtext;
+    bool m_wordwrap;
     Color m_foreground_color;
     Color m_background_color;
     Color m_selection_color;
@@ -122,6 +127,7 @@ protected:
     Vector2i m_offset, m_max_size;
     int m_padding;
     bool m_selectable;
+    bool m_needlayout = false;
     Vector2i m_selection_start;
     Vector2i m_selection_end;
 };

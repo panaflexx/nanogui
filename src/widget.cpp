@@ -100,14 +100,20 @@ const Widget *Widget::find_widget(const Vector2i &p) const {
 }
 
 bool Widget::mouse_button_event(const Vector2i &p, int button, bool down, int modifiers) {
+    printf("Widget::mouse_button_event p=%d,%d m_pos=%d,%d\n", p.x(), p.y(), m_pos.x(), m_pos.y());
     for (auto it = m_children.rbegin(); it != m_children.rend(); ++it) {
         Widget *child = *it;
         if (child->visible() && child->contains(p - m_pos) &&
-            child->mouse_button_event(p - m_pos, button, down, modifiers))
+            child->mouse_button_event(p - m_pos, button, down, modifiers)) {
+            printf("Widget::mouse_button_event TRUE\n");
             return true;
+        }
     }
-    if (button == GLFW_MOUSE_BUTTON_1 && down && !m_focused)
+    if (button == GLFW_MOUSE_BUTTON_1 && down && !m_focused) {
+        printf("Widget::mouse_button_event request_focus\n");
         request_focus();
+    }
+    printf("Widget::mouse_button_event FALSE\n");
     return false;
 }
 

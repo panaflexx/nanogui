@@ -65,8 +65,17 @@ bool VScrollPanel::mouse_drag_event(const Vector2i &p, const Vector2i &rel,
 
 bool VScrollPanel::mouse_button_event(const Vector2i &p, int button, bool down,
                                       int modifiers) {
-    if (Widget::mouse_button_event(p, button, down, modifiers))
+    printf("VScrollPanel: mouse_button_event p=%d,%d\n", p.x(), p.y());
+    Vector2i p_rel = p;
+    int yoffset = m_scroll*(m_child_preferred_height - m_size.y());
+    p_rel[1] += yoffset;
+    printf("VScrollPanel: mouse_button_event p_rel=%d,%d m_scroll=%f yoffset=%d\n", p_rel.x(), p_rel.y(), m_scroll, yoffset);
+
+    if (Widget::mouse_button_event(p, button, down, modifiers)) {
+        printf("Delivered events to child\n");
         return true;
+    }
+    printf("VScrollPanel: mouse_button_event SCROLL? p=%d,%d\n", p.x(), p.y());
 
     if (down && button == GLFW_MOUSE_BUTTON_1 && !m_children.empty() &&
         m_child_preferred_height > m_size.y() &&

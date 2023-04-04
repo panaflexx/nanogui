@@ -18,6 +18,7 @@
 NAMESPACE_BEGIN(nanogui)
 
 TextArea::TextArea(Widget *parent) : Widget(parent),
+  m_rawtext(""), m_wordwrap(false),
   m_foreground_color(Color(0, 0)), m_background_color(Color(0, 0)),
   m_selection_color(.5f, 1.f), m_font("sans"), m_offset(0),
   m_max_size(0), m_padding(0), m_selectable(true),
@@ -31,6 +32,11 @@ void TextArea::add_text(const std::string &text) {
 }
 
 void TextArea::append(const std::string &text) {
+    m_rawtext.append(text);
+    m_needlayout = true;
+}
+
+void TextArea::appendOrig(const std::string &text) {
     NVGcontext *ctx = screen()->nvg_context();
 
     nvgFontSize(ctx, font_size());
@@ -128,6 +134,77 @@ bool TextArea::keyboard_character_event(unsigned int codepoint) {
     }
 
     return false;
+}
+
+void TextArea::perform_layout(NVGcontext *ctx) {
+    printf("TextArea::perform_layout pos=%d,%d size=%d,%d\n", m_pos.x(), m_pos.y(), m_size.x(), m_size.y());
+
+    if(m_size.x() == 0 || m_size.y() == 0 || !m_needlayout)
+        return;
+
+    printf("m_needlayout = %s\n", m_needlayout?"TRUE":"FALSE");
+    clear();
+    int wrap_width = m_size.x() + (m_padding * 2);
+
+    nvgFontSize(ctx, font_size());
+    nvgFontFace(ctx, m_font.c_str());
+
+    const char *str = m_rawtext.c_str();
+    int last_wrap_width = 0, width=0;
+    const char *last_wrap_pos = str;
+
+    printf("wrap_width: %d\n", wrap_width);
+
+    do {
+        const char *begin = str;
+        width = last_wrap_width = 0;
+
+        while (*str != 0 && *str != '\n')
+        {
+            if(*str == ' ' || *str == ',' || *str == '-') {
+                std::string line(begin, str);
+                if (!line.empty()) {
+                    printf("line=[%s]\n", line.c_str());
+                    width = nvgTextBounds(ctx, 0, 0, line.c_str(), nullptr, nullptr);
+
+                    if(width < wrap_width) {
+                        last_wrap_width = width;
+                        last_wrap_pos = str;
+                    } else {
+                        if(last_wrap_width > 0)
+                            str = last_wrap_pos;
+                        printf("Text fragment: [%s]\n", line.c_str());
+                        break;
+                    }
+                }
+            }
+            
+            str++;
+        }
+
+        std::string line(begin, str);
+        if (line.empty()) {
+            //printf("empty line=[%s]\n", line.c_str());
+            m_offset = Vector2i(0, m_offset.y() + font_size());
+            m_max_size = max(m_max_size, m_offset);
+            continue;
+        }
+        printf("add line=[%s]\n", line.c_str());
+        width = nvgTextBounds(ctx, 0, 0, line.c_str(), nullptr, nullptr);
+        m_blocks.push_back(Block { m_offset, width, line, m_foreground_color });
+
+        m_offset.x() += width;
+        m_max_size = max(m_max_size, m_offset);
+        //if (*str == '\n') {
+            m_offset = Vector2i(0, m_offset.y() + font_size());
+            m_max_size = max(m_max_size, m_offset);
+        //}
+    } while (*str++ != 0);
+
+    //VScrollPanel *vscroll = dynamic_cast<VScrollPanel *>(m_parent);
+    //if (vscroll)
+    //    vscroll->perform_layout(ctx);
+    m_needlayout = false;
 }
 
 Vector2i TextArea::preferred_size(NVGcontext *) const {
@@ -235,6 +312,7 @@ void TextArea::draw(NVGcontext *ctx) {
 
 bool TextArea::mouse_button_event(const Vector2i &p, int button, bool down,
                                   int /* modifiers */) {
+    printf("TextArea::mouse_button_event p=%d,%d\n", p.x(), p.y());
     if (down && button == GLFW_MOUSE_BUTTON_1 && m_selectable) {
         m_selection_start = m_selection_end =
             position_to_block(p - m_pos - m_padding);
@@ -245,8 +323,10 @@ bool TextArea::mouse_button_event(const Vector2i &p, int button, bool down,
     return false;
 }
 
-bool TextArea::mouse_drag_event(const Vector2i &p, const Vector2i &/* rel */,
+bool TextArea::mouse_drag_event(const Vector2i &p, const Vector2i & rel,
                                 int /* button */, int /* modifiers */) {
+    printf("mouse_drag_event: p=%d,%d rel=%d,%d\n", p.x(), p.y(), rel.x(), rel.y());
+
     if (m_selection_start != -1 && m_selectable) {
         m_selection_end = position_to_block(p - m_pos - m_padding);
         return true;
